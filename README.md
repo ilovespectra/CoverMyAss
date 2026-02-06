@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cover My Ass
+
+*A Satirical Commentary on Plausible Deniability in the Digital Age*
+
+## Overview
+
+Cover My Ass is a tongue-in-cheek web application that transforms genuine, incriminating images into convincingly fake AI-generated content. In an era where AI-generated imagery has become ubiquitous, this tool offers the ultimate ironic solution: make your real images look artificially generated, thereby achieving complete plausible deniability.
+
+## The Premise
+
+In a world where people dismiss inconvenient evidence as "obviously AI-generated," why not lean into it? This application takes authentic photographs and applies artistic filters and neural styling to make them appear as though they were created by a machine learning model. The result? Your irrefutable evidence of wrongdoing now looks suspiciously synthetic.
+
+## How It Works
+
+Upload an image and let our satirical transformation engine work its magic. The application processes your genuine photographs through a series of artistic effects designed to make them indistinguishable from AI-generated content—complete with those telltale visual artifacts people have come to recognize (and dismiss).
+
+Perfect for:
+- Deflecting accountability with artistic flair
+- Creating plausible deniability through technological irony
+- Making a statement about trust, technology, and modern skepticism
+- General commentary on how we've normalized dismissing evidence
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to begin your journey into satirical obfuscation.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## A Cautionary Note
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is pure satire. It's a commentary on how the proliferation of AI-generated content has created a world where even real evidence can be dismissed as "obviously fake." Use responsibly and recognize the absurdity for what it is.
