@@ -2,12 +2,24 @@
 
 import { useState, useRef, useEffect } from 'react';
 
+const AI_BRANDS = [
+  { value: 'gemini', label: 'Gemini', short: 'G', color: '#67e8f9', bg: 'rgba(12, 18, 30, 0.82)', accent: '#8b5cf6' },
+  { value: 'chatgpt', label: 'ChatGPT', short: 'C', color: '#7dd3fc', bg: 'rgba(10, 17, 20, 0.82)', accent: '#22c55e' },
+  { value: 'claude', label: 'Claude', short: 'C', color: '#f9a8d4', bg: 'rgba(28, 15, 22, 0.82)', accent: '#f472b6' },
+  { value: 'midjourney', label: 'Midjourney', short: 'M', color: '#fef08a', bg: 'rgba(28, 22, 12, 0.82)', accent: '#f59e0b' },
+  { value: 'dalle', label: 'DALL·E', short: 'D', color: '#c4b5fd', bg: 'rgba(21, 18, 36, 0.82)', accent: '#a78bfa' },
+  { value: 'stable-diffusion', label: 'Stable Diffusion', short: 'S', color: '#86efac', bg: 'rgba(10, 22, 16, 0.82)', accent: '#22c55e' },
+] as const;
+
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [watermarkedImage, setWatermarkedImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState<(typeof AI_BRANDS)[number]['value']>('gemini');
+  const [watermarkScale, setWatermarkScale] = useState(1.2);
+  const [watermarkOpacity, setWatermarkOpacity] = useState(0.75);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const selectedBrandConfig = AI_BRANDS.find((brand) => brand.value === selectedBrand) ?? AI_BRANDS[0];
 
   const applyWatermark = (imageData: string) => {
     const canvas = document.createElement('canvas');
@@ -21,21 +33,60 @@ export default function Home() {
       canvas.height = baseImg.height;
       ctx.drawImage(baseImg, 0, 0);
 
-      const watermarkImg = new Image();
-      watermarkImg.crossOrigin = 'anonymous';
-      watermarkImg.onload = () => {
-        const watermarkSize = baseImg.width * 0.15 * 0.7;
-        const wHeight = (watermarkImg.height / watermarkImg.width) * watermarkSize;
-        const marginRight = 40;
-        const marginBottom = 40;
-        ctx.globalAlpha = 0.4;
-        ctx.drawImage(watermarkImg, baseImg.width - watermarkSize - marginRight, baseImg.height - wHeight - marginBottom, watermarkSize, wHeight);
-        setWatermarkedImage(canvas.toDataURL('image/png'));
-      };
-      watermarkImg.src = '/gemini.png';
+      const label = selectedBrandConfig.label.toUpperCase();
+      const inset = 34;
+      const baseFontSize = Math.max(54, baseImg.width * 0.06 * watermarkScale);
+      const pillHeight = baseFontSize * 1.3;
+      const sidePadding = baseFontSize * 0.75;
+      ctx.font = `900 ${baseFontSize}px Arial Black, sans-serif`;
+      const textWidth = ctx.measureText(label).width;
+      const pillWidth = textWidth + sidePadding * 2.6 + baseFontSize * 1.8;
+      const x = baseImg.width - inset - pillWidth / 2;
+      const y = baseImg.height - inset - pillHeight / 2;
+
+      ctx.save();
+      ctx.globalAlpha = watermarkOpacity;
+      ctx.fillStyle = selectedBrandConfig.bg;
+      ctx.strokeStyle = selectedBrandConfig.accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x - pillWidth / 2, y - pillHeight / 2, pillWidth, pillHeight, 18);
+      ctx.fill();
+      ctx.stroke();
+
+      const badgeSize = baseFontSize * 0.82;
+      const badgeX = x - pillWidth / 2 + 18;
+      const badgeY = y - badgeSize / 2;
+      ctx.fillStyle = selectedBrandConfig.accent;
+      ctx.beginPath();
+      ctx.roundRect(badgeX, badgeY, badgeSize, badgeSize, 10);
+      ctx.fill();
+
+      ctx.fillStyle = '#020617';
+      ctx.font = `900 ${badgeSize * 0.62}px Arial Black, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(selectedBrandConfig.short, badgeX + badgeSize / 2, badgeY + badgeSize / 2 + 1);
+
+      ctx.fillStyle = selectedBrandConfig.color;
+      ctx.font = `900 ${baseFontSize}px Arial Black, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = selectedBrandConfig.accent;
+      ctx.shadowBlur = 18;
+      ctx.fillText(label, badgeX + badgeSize + 18, y + 1);
+      ctx.restore();
+
+      setWatermarkedImage(canvas.toDataURL('image/png'));
     };
     baseImg.src = imageData;
   };
+
+  useEffect(() => {
+    if (selectedImage) {
+      applyWatermark(selectedImage);
+    }
+  }, [selectedImage, selectedBrand, watermarkScale, watermarkOpacity]);
 
   // Load demo image on mount
   useEffect(() => {
@@ -47,8 +98,6 @@ export default function Home() {
         reader.onload = (e) => {
           const imageData = e.target?.result as string;
           setSelectedImage(imageData);
-          // Auto-apply watermark to demo image
-          applyWatermark(imageData);
         };
         reader.readAsDataURL(blob);
       } catch (error) {
@@ -65,17 +114,9 @@ export default function Home() {
       reader.onload = (event) => {
         const imageData = event.target?.result as string;
         setSelectedImage(imageData);
-        setWatermarkedImage(null);
-        // Auto-apply watermark to newly selected image
-        applyWatermark(imageData);
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const addWatermark = async () => {
-    if (!selectedImage) return;
-    applyWatermark(selectedImage);
   };
 
   const downloadImage = () => {
@@ -198,19 +239,77 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-cyan-500/30">
-                  {watermarkedImage && (
+                {/* Watermark controls */}
+                <div className="pt-6 border-t border-cyan-500/30 space-y-5">
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <label className="block text-left">
+                      <span className="text-xs uppercase tracking-widest text-cyan-300 mb-2 block">
+                        AI brand
+                      </span>
+                      <select
+                        value={selectedBrand}
+                        onChange={(e) => setSelectedBrand(e.target.value as (typeof AI_BRANDS)[number]['value'])}
+                        className="w-full bg-black border border-cyan-500/60 text-cyan-100 px-3 py-2 outline-none"
+                        style={{ boxShadow: '0 0 10px rgba(34, 211, 238, 0.2)' }}
+                      >
+                        {AI_BRANDS.map((brand) => (
+                          <option key={brand.value} value={brand.value}>
+                            {brand.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="block text-left">
+                      <span className="text-xs uppercase tracking-widest text-cyan-300 mb-2 block">
+                        Size: {watermarkScale.toFixed(2)}x
+                      </span>
+                      <input
+                        type="range"
+                        min="0.7"
+                        max="1.8"
+                        step="0.05"
+                        value={watermarkScale}
+                        onChange={(e) => setWatermarkScale(Number(e.target.value))}
+                        className="w-full accent-pink-500"
+                      />
+                    </label>
+
+                    <label className="block text-left">
+                      <span className="text-xs uppercase tracking-widest text-cyan-300 mb-2 block">
+                        Opacity: {watermarkOpacity.toFixed(2)}
+                      </span>
+                      <input
+                        type="range"
+                        min="0.2"
+                        max="1"
+                        step="0.05"
+                        value={watermarkOpacity}
+                        onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
+                        className="w-full accent-cyan-500"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <button
-                      onClick={downloadImage}
-                      className="flex-1 py-3 px-4 bg-pink-500 hover:bg-pink-400 text-black font-bold uppercase tracking-widest transition-all duration-300"
-                      style={{
-                        boxShadow: '0 0 15px rgba(255, 0, 128, 0.4)',
-                      }}
+                      onClick={() => selectedImage && applyWatermark(selectedImage)}
+                      className="flex-1 py-3 px-4 border border-cyan-500 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-200 font-bold uppercase tracking-widest transition-all duration-300"
                     >
-                      DOWNLOAD
+                      Reapply Watermark
                     </button>
-                  )}
+                    {watermarkedImage && (
+                      <button
+                        onClick={downloadImage}
+                        className="flex-1 py-3 px-4 bg-pink-500 hover:bg-pink-400 text-black font-bold uppercase tracking-widest transition-all duration-300"
+                        style={{
+                          boxShadow: '0 0 15px rgba(255, 0, 128, 0.4)',
+                        }}
+                      >
+                        DOWNLOAD
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -223,8 +322,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Hidden canvas for watermark processing */}
-      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }
