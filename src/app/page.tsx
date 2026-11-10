@@ -41,7 +41,7 @@ export default function Home() {
   useEffect(() => {
     const loadDemoImage = async () => {
       try {
-        const response = await fetch('/littlestjeff1.jpeg');
+        const response = await fetch('/cma.jpeg');
         const blob = await response.blob();
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -165,9 +165,14 @@ export default function Home() {
                     </p>
                     <div className="relative overflow-hidden border border-cyan-500/30">
                       <img
+                        src="/littlestjeff1.jpeg"
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover opacity-25 blur-[1px]"
+                      />
+                      <img
                         src={selectedImage}
                         alt="Original"
-                        className="w-full h-auto object-contain"
+                        className="relative w-full h-auto object-contain"
                       />
                     </div>
                   </div>
