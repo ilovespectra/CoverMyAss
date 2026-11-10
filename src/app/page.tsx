@@ -6,9 +6,6 @@ const AI_BRANDS = [
   { value: 'gemini', label: 'Gemini', logo: '/brand-logos/gemini.svg' },
   { value: 'chatgpt', label: 'ChatGPT', logo: '/brand-logos/chatgpt.svg' },
   { value: 'claude', label: 'Claude', logo: '/brand-logos/claude.svg' },
-  { value: 'midjourney', label: 'Midjourney', logo: '/brand-logos/midjourney.svg' },
-  { value: 'dalle', label: 'DALL·E', logo: '/brand-logos/dalle.svg' },
-  { value: 'stable-diffusion', label: 'Stable Diffusion', logo: '/brand-logos/stable-diffusion.svg' },
 ] as const;
 
 export default function Home() {
