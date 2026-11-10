@@ -3,13 +3,78 @@
 import { useState, useRef, useEffect } from 'react';
 
 const AI_BRANDS = [
-  { value: 'gemini', label: 'Gemini', short: 'G', color: '#67e8f9', bg: 'rgba(12, 18, 30, 0.82)', accent: '#8b5cf6' },
-  { value: 'chatgpt', label: 'ChatGPT', short: 'C', color: '#7dd3fc', bg: 'rgba(10, 17, 20, 0.82)', accent: '#22c55e' },
-  { value: 'claude', label: 'Claude', short: 'C', color: '#f9a8d4', bg: 'rgba(28, 15, 22, 0.82)', accent: '#f472b6' },
-  { value: 'midjourney', label: 'Midjourney', short: 'M', color: '#fef08a', bg: 'rgba(28, 22, 12, 0.82)', accent: '#f59e0b' },
-  { value: 'dalle', label: 'DALL·E', short: 'D', color: '#c4b5fd', bg: 'rgba(21, 18, 36, 0.82)', accent: '#a78bfa' },
-  { value: 'stable-diffusion', label: 'Stable Diffusion', short: 'S', color: '#86efac', bg: 'rgba(10, 22, 16, 0.82)', accent: '#22c55e' },
+  { value: 'gemini', label: 'Gemini', accent: '#8b5cf6', bg: 'rgba(12, 18, 30, 0.82)' },
+  { value: 'chatgpt', label: 'ChatGPT', accent: '#22c55e', bg: 'rgba(10, 17, 20, 0.82)' },
+  { value: 'claude', label: 'Claude', accent: '#f472b6', bg: 'rgba(28, 15, 22, 0.82)' },
+  { value: 'midjourney', label: 'Midjourney', accent: '#f59e0b', bg: 'rgba(28, 22, 12, 0.82)' },
+  { value: 'dalle', label: 'DALL·E', accent: '#a78bfa', bg: 'rgba(21, 18, 36, 0.82)' },
+  { value: 'stable-diffusion', label: 'Stable Diffusion', accent: '#22c55e', bg: 'rgba(10, 22, 16, 0.82)' },
 ] as const;
+
+const createBrandLogoSvg = (brand: (typeof AI_BRANDS)[number]['value']) => {
+  const common = `viewBox="0 0 120 120" width="120" height="120"`;
+
+  switch (brand) {
+    case 'gemini':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="28" fill="#0B1020"/>
+          <path d="M60 14 L92 29 L103 60 L92 91 L60 106 L28 91 L17 60 L28 29 Z" fill="none" stroke="#B5B7FF" stroke-width="8"/>
+          <path d="M60 25 L83 38 L90 60 L83 82 L60 95 L37 82 L30 60 L37 38 Z" fill="none" stroke="#89F0FF" stroke-width="7"/>
+          <path d="M60 46 L72 60 L60 74 L48 60 Z" fill="#B5B7FF"/>
+        </svg>
+      `)}`;
+    case 'chatgpt':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="30" fill="#091A1A"/>
+          <path d="M35 36C35 25.5 43.5 17 54 17H68C80 17 88 25.5 88 36V64C88 74.5 80 83 68 83H59L46 95V83H54C43.5 83 35 74.5 35 64V36Z" fill="#7ee7b0"/>
+          <path d="M50 47 C50 40, 56 35, 62 35H74C82 35, 88 41, 88 49C88 57, 82 63, 74 63H67L61 70L61 63H62C56 63, 50 58, 50 51V47Z" fill="#0d241f"/>
+          <circle cx="58" cy="48" r="4" fill="#7ee7b0"/>
+          <circle cx="71" cy="48" r="4" fill="#7ee7b0"/>
+          <path d="M57 58 Q65 63 72 58" stroke="#7ee7b0" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+      `)}`;
+    case 'claude':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="28" fill="#1F0D16"/>
+          <path d="M82 22C71 17 58 20 49 30C35 46 35 69 47 83C57 94 74 98 87 92C77 84 71 76 68 66C64 54 66 42 82 22Z" fill="#FFB4D9" fill-opacity="0.9"/>
+          <path d="M36 92C47 100 61 101 73 96C63 82 57 69 54 53C48 57 42 63 38 70C32 80 32 87 36 92Z" fill="#FFD2E7" fill-opacity="0.9"/>
+          <path d="M74 34C60 33 48 39 42 49C37 58 37 71 42 80C48 89 59 95 71 94C64 87 60 80 59 72C58 60 61 50 74 34Z" fill="#1F0D16"/>
+        </svg>
+      `)}`;
+    case 'midjourney':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="26" fill="#1F1A0D"/>
+          <path d="M26 92V23H41L60 60L79 23H94V92H79V48L62 83H58L41 48V92H26Z" fill="#F8D875"/>
+          <circle cx="60" cy="24" r="9" fill="#FFFFFF" fill-opacity="0.9"/>
+        </svg>
+      `)}`;
+    case 'dalle':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="26" fill="#171523"/>
+          <path d="M35 88V32H65C80 32 92 44 92 59C92 73 80 86 65 86H35Z" fill="#D8C8FF"/>
+          <path d="M50 47H66C73 47 78 52 78 59C78 66 73 72 66 72H50V47Z" fill="#171523"/>
+          <path d="M59 29 L75 44 L72 59 L52 76 L30 59 L35 46 Z" fill="#A78BFA" fill-opacity="0.7"/>
+        </svg>
+      `)}`;
+    case 'stable-diffusion':
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}>
+          <rect width="120" height="120" rx="28" fill="#081A11"/>
+          <path d="M72 18C60 18 48 22 40 32C33 41 30 52 33 63C35 71 42 79 50 82C56 84 62 84 68 82C58 78 52 70 52 61C52 50 62 42 74 42C85 42 94 49 94 62C94 81 78 97 57 97H43V107H77C90 107 103 99 110 85C116 73 116 58 109 46C100 30 86 18 72 18Z" fill="#9DECB5"/>
+          <path d="M34 91C44 83 52 73 56 61C59 53 59 47 56 41C48 47 41 56 37 67C33 77 32 84 34 91Z" fill="#B3F7C2" fill-opacity="0.8"/>
+        </svg>
+      `)}`;
+    default:
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" ${common}><rect width="120" height="120" rx="28" fill="#111827"/><circle cx="60" cy="60" r="30" fill="#E2E8F0"/></svg>
+      `)}`;
+  }
+};
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -33,51 +98,35 @@ export default function Home() {
       canvas.height = baseImg.height;
       ctx.drawImage(baseImg, 0, 0);
 
-      const label = selectedBrandConfig.label.toUpperCase();
-      const inset = 34;
-      const baseFontSize = Math.max(54, baseImg.width * 0.06 * watermarkScale);
-      const pillHeight = baseFontSize * 1.3;
-      const sidePadding = baseFontSize * 0.75;
-      ctx.font = `900 ${baseFontSize}px Arial Black, sans-serif`;
-      const textWidth = ctx.measureText(label).width;
-      const pillWidth = textWidth + sidePadding * 2.6 + baseFontSize * 1.8;
-      const x = baseImg.width - inset - pillWidth / 2;
-      const y = baseImg.height - inset - pillHeight / 2;
+      const logo = new Image();
+      logo.crossOrigin = 'anonymous';
+      logo.onload = () => {
+        const logoSize = Math.max(72, baseImg.width * 0.14 * watermarkScale);
+        const margin = 34;
+        const pillWidth = logoSize * 1.8;
+        const pillHeight = logoSize * 1.2;
+        const x = baseImg.width - margin - pillWidth;
+        const y = baseImg.height - margin - pillHeight;
 
-      ctx.save();
-      ctx.globalAlpha = watermarkOpacity;
-      ctx.fillStyle = selectedBrandConfig.bg;
-      ctx.strokeStyle = selectedBrandConfig.accent;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.roundRect(x - pillWidth / 2, y - pillHeight / 2, pillWidth, pillHeight, 18);
-      ctx.fill();
-      ctx.stroke();
+        ctx.save();
+        ctx.globalAlpha = watermarkOpacity;
+        ctx.fillStyle = selectedBrandConfig.bg;
+        ctx.strokeStyle = selectedBrandConfig.accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, pillWidth, pillHeight, 18);
+        ctx.fill();
+        ctx.stroke();
 
-      const badgeSize = baseFontSize * 0.82;
-      const badgeX = x - pillWidth / 2 + 18;
-      const badgeY = y - badgeSize / 2;
-      ctx.fillStyle = selectedBrandConfig.accent;
-      ctx.beginPath();
-      ctx.roundRect(badgeX, badgeY, badgeSize, badgeSize, 10);
-      ctx.fill();
+        const iconSize = logoSize * 0.7;
+        const iconX = x + 12;
+        const iconY = y + (pillHeight - iconSize) / 2;
+        ctx.drawImage(logo, iconX, iconY, iconSize, iconSize);
+        ctx.restore();
 
-      ctx.fillStyle = '#020617';
-      ctx.font = `900 ${badgeSize * 0.62}px Arial Black, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(selectedBrandConfig.short, badgeX + badgeSize / 2, badgeY + badgeSize / 2 + 1);
-
-      ctx.fillStyle = selectedBrandConfig.color;
-      ctx.font = `900 ${baseFontSize}px Arial Black, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      ctx.shadowColor = selectedBrandConfig.accent;
-      ctx.shadowBlur = 18;
-      ctx.fillText(label, badgeX + badgeSize + 18, y + 1);
-      ctx.restore();
-
-      setWatermarkedImage(canvas.toDataURL('image/png'));
+        setWatermarkedImage(canvas.toDataURL('image/png'));
+      };
+      logo.src = createBrandLogoSvg(selectedBrand);
     };
     baseImg.src = imageData;
   };
