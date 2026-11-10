@@ -13,7 +13,7 @@ export default function Home() {
   const [watermarkedImage, setWatermarkedImage] = useState<string | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<(typeof AI_BRANDS)[number]['value']>('gemini');
   const [watermarkScale, setWatermarkScale] = useState(1.2);
-  const [watermarkOpacity, setWatermarkOpacity] = useState(0.75);
+  const [watermarkTransparency, setWatermarkTransparency] = useState(0.35);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selectedBrandConfig = AI_BRANDS.find((brand) => brand.value === selectedBrand) ?? AI_BRANDS[0];
@@ -39,7 +39,8 @@ export default function Home() {
         const y = baseImg.height - logoSize - margin;
 
         ctx.save();
-        ctx.globalAlpha = watermarkOpacity;
+        ctx.filter = 'grayscale(1) brightness(1.6) contrast(1.2)';
+        ctx.globalAlpha = 1 - watermarkTransparency;
         ctx.drawImage(logo, x, y, logoSize, logoSize);
         ctx.restore();
 
@@ -57,7 +58,7 @@ export default function Home() {
     if (selectedImage) {
       applyWatermark(selectedImage);
     }
-  }, [selectedImage, selectedBrand, watermarkScale, watermarkOpacity]);
+  }, [selectedImage, selectedBrand, watermarkScale, watermarkTransparency]);
 
   // Load demo image on mount
   useEffect(() => {
@@ -248,15 +249,15 @@ export default function Home() {
 
                     <label className="block text-left">
                       <span className="text-xs uppercase tracking-widest text-cyan-300 mb-2 block">
-                        Opacity: {watermarkOpacity.toFixed(2)}
+                        Transparency: {watermarkTransparency.toFixed(2)}
                       </span>
                       <input
                         type="range"
-                        min="0.2"
+                        min="0"
                         max="1"
                         step="0.05"
-                        value={watermarkOpacity}
-                        onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
+                        value={watermarkTransparency}
+                        onChange={(e) => setWatermarkTransparency(Number(e.target.value))}
                         className="w-full accent-cyan-500"
                       />
                     </label>
