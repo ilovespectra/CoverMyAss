@@ -287,8 +287,32 @@ export default function Home() {
             )}
           </div>
 
+          <section className="mt-8 border border-cyan-500/40 bg-black/60 backdrop-blur-sm p-4 md:p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.35em] text-cyan-300/80">
+                  Archive / historical image
+                </p>
+                <h2 className="mt-2 text-2xl font-black text-cyan-300 tracking-wider">
+                  Earlier paparazzi shot
+                </h2>
+              </div>
+              <span className="rounded-full border border-pink-500/50 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-pink-300">
+                Tel Aviv reminder
+              </span>
+            </div>
+
+            <div className="overflow-hidden border border-cyan-500/30 bg-black/70">
+              <img
+                src="/littlestjeff1.jpeg"
+                alt="Earlier paparazzi-style image of Jeff in Tel Aviv"
+                className="block w-full h-[280px] md:h-[360px] object-cover grayscale-[0.15] contrast-125"
+              />
+            </div>
+          </section>
+
           {/* Footer message */}
-          <div className="text-center text-xs text-cyan-400/60 uppercase tracking-widest">
+          <div className="text-center text-xs text-cyan-400/60 uppercase tracking-widest mt-8">
             <p>⚡ Processing in browser • No uploads to servers ⚡</p>
           </div>
         </div>
