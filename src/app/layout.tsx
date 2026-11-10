@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://cover-my-ass.vercel.app"),
+  metadataBase: new URL("https://cma.kolektivkrog.si"),
   title: "Cover My Ass - Make Real Photos Look Fake",
   description: "Add Gemini watermarks to your photos and make them look AI-generated. Simple, fast, and free.",
   openGraph: {
